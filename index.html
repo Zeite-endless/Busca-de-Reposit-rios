@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Funcionários</title>
+    <style text="text/css">
+        * {
+            font-size: 20px;
+            padding-top: 1px;
+            padding-bottom: 6.5px;
+            width: 99%;
+            font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
+        }
+
+        body {
+            border: 5px solid rgb(156, 228, 206);
+            padding-bottom: 0px;
+            padding-top: 0px;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            margin-left: 12px;
+        }
+
+        #buttonsave {
+            cursor: pointer;
+            background-color: bisque;
+            border: 2px solid black;
+        }
+
+        #corpo {
+            background-image: url(https://www.accesscorp.com.br/wp-content/uploads/2019/07/business-intelligence-o-que-e-exemplos-aplicacoes-1200x480.jpg);
+            background-repeat: no-repeat;
+            background-size: cover;
+            width: 100%;
+            height: 100%;
+        }
+
+        #titulo {
+            font-size: 48px;
+            font-weight: bolder;
+            text-decoration: underline;
+        }
+
+        #campos {
+            display: inline-block;
+            font-weight: bolder;
+            width: 300px;
+            background-color: rgb(156, 241, 201);
+            justify-content: center;
+            padding-left: 1.5%;
+            padding-right: 1.5%;
+            padding-bottom: 0px;
+            border: 5px solid red;
+            border-radius: 12px;
+        }
+
+        input {
+            border-radius: 12px;
+            border: 2px solid black;
+        }
+
+        select {
+            border-radius: 12px;
+            width: 300px;
+            border: 2px solid black;
+        }
+
+        #selec {
+            width: 32.03px;
+            height: 37.05px;
+            transform: translateX(-8px);
+            border: 2px solid black;
+        }
+
+        #comp {
+            width: 250px;
+            margin-right: 0px;
+            margin-top: 0px;
+            transform: translateY(-11px);
+        }
+    </style>
+
+</head>
+
+<body align="center">
+    <main id="corpo">
+        <h1 id="titulo">Informações Pessoais do Funcionário</h1>
+        <div id="campos">
+            <form name="formuser" action="enviar.php" method="POST">
+                <label for="Nome">Nome do Funcionário</label><br><input id="Nome" name="Nome" type="text">
+                <br><label for="cpf">CPF</label><br><input type="text" id="RegraValida" value="" name="RegraValida"
+                    onkeydown="javascript: fMasc( this, mCPF );" onchange="ValidaCPF()" maxlength="14">
+                <br><label for="rg">RG</label><br><input type="text" id="rgvalido" name="rgvalido" value=""
+                    onkeypress="mascara (this, '##.###.###-#')" maxlength="12" onchange="validarrg()">
+                <br><label for="nasc">Data de Nascimento</label><br><input type="date" name="nasc" id="nasc">
+                <br><label for="cnh">Tipo da CNH</label><br>
+                <select name="CNH" id="cnh" value="tipo CNH" name="cnh">
+                    <optgroup label="Tipo de Documento">
+                        <option value="Tipo A">CNH Categoria A</option>
+                        <option value="Tipo B">CNH Categoria B</option>
+                    </optgroup>
+                </select>
+                <br><label for="ec">Estado Civil</label><br><select name="estadocivil" id="ec">
+                    <optgroup label="Selecione o Estado Civil">
+                        <option value="Solteiro(a)">Solteiro(a)</option>
+                        <option value="Casado(a)">Casado(a)</option>
+                        <option value="Viuvo(a)">Viuvo(a)</option>
+                    </optgroup>
+                </select>
+                <br><label for="cep">CEP</label><br><input id="cepvalido" value="" name="cepvalido" type="text"
+                    onkeypress="mascara(this, '#####-###')" maxlength="9" onchange="validarcep()" oninput="getDadosEnderecoCEP(this.value)">
+                <br><label for="rua">Rua</label><br><input id="rua" type="text" name="rua">
+                <br><label for="bairro">Bairro</label><br><input id="bairro" name="bairro" type="text">
+                <br><label for="cidade">Cidade</label><br><input id="cidade" name="cidade" type="text">
+                <br><label for="estado">Estado</label><br><input id="estado" name="estado" type="text">
+                <br><label for="numero">Número da Casa</label><br><input id="numero" name="numero" type="number">
+                <br><label for="comp">Complemento</label><br><input type="checkbox" name="comp" id="selec" for="comp"
+                    onload="check()"><input id="comp" type="text" value="" placeholder="Selecione para desabilitar">
+                <br> <input type="button" id="buttonsave" onclick="return validarcampos()" value="salvar">
+
+            </form>
+        </div>
+    </main>
+
+    <script>
+        document.getElementById("selec").onclick = function check() {
+            document.getElementById("comp").disabled = this.checked;
+            document.getElementById("comp").value = "Campo desabilitado!";
+        }
+    </script>
+
+    <script>
+        function ValidaCPF() {
+            var RegraValida = document.getElementById("RegraValida").value;
+            var cpfValido = /^(([0-9]{3}.[0-9]{3}.[0-9]{3}-[0-9]{2})|([0-9]{11}))$/;
+            if (cpfValido.test(RegraValida) == true) {
+                alert("CPF Válido");
+            } else {
+                alert("CPF Inválido");
+            }
+        }
+
+        function fMasc(objeto, mascara) {
+            obj = objeto
+            masc = mascara
+            setTimeout("fMascEx()", 1)
+        }
+
+        function fMascEx() {
+            obj.value = masc(obj.value)
+        }
+
+        function mCPF(cpf) {
+            cpf = cpf.replace(/\D/g, "")
+            cpf = cpf.replace(/(\d{3})(\d)/, "$1.$2")
+            cpf = cpf.replace(/(\d{3})(\d)/, "$1.$2")
+            cpf = cpf.replace(/(\d{3})(\d{1,2})$/, "$1-$2")
+            return cpf
+        }
+    </script>
+    <script>
+        function mascara(t, mask) {
+            var i = t.value.length;
+            var saida = mask.substring(1, 0);
+            var texto = mask.substring(i)
+            if (texto.substring(0, 1) != saida) {
+                t.value += texto.substring(0, 1);
+            }
+        }
+    </script>
+
+    <script>
+        function validarrg() {
+            var rg = document.getElementById("rgvalido");
+
+            if (rg.value.length == 12) {
+                alert("RG Válido!")
+            } else {
+                alert("RG Inválido!")
+            }
+        }
+    </script>
+
+    <script>
+        function validarcep() {
+            var rg = document.getElementById("cepvalido");
+
+            if (rg.value.length == 9) {
+                alert("CEP Válido!")
+            } else {
+                alert("CEP Inválido!")
+            }
+        }
+    </script>
+
+    <script>
+        function validarcampos() {
+            var Nome = formuser.Nome.value;
+            if (Nome == "") {
+                alert("Preencha o campo Nome do Funcionário.");
+                formuser.Nome.focus();
+                return false;
+            }
+            var RegraValida = formuser.RegraValida.value;
+            if (RegraValida == "") {
+                alert("Preencha o campo CPF.");
+                formuser.RegraValida.focus();
+                return false;
+            }
+            var rgvalido = formuser.rgvalido.value;
+            if (rgvalido == "") {
+                alert("Preencha o campo RG");
+                formuser.rgvalido.focus();
+                return false;
+            }
+            var nasc = formuser.nasc.value;
+            if (nasc == "") {
+                alert("Preencha o campo Data de Nascimento");
+                formuser.nasc.focus();
+                return false;
+            }
+            var cnh = formuser.cnh.value;
+            if (cnh == "") {
+                alert("Preencha o campo Tipo de CNH");
+                formuser.cnh.focus();
+                return false;
+            }
+            var estadocivil = formuser.estadocivil.value;
+            if (estadocivil == "") {
+                alert("Preencha o campo Estado Civil");
+                formuser.ec.focus();
+                return false;
+            }
+            var cepvalido = formuser.cepvalido.value;
+            if (cepvalido == "") {
+                alert("Preencha o campo CEP");
+                formuser.cepvalido.focus();
+                return false;
+            }
+            var rua = formuser.rua.value;
+            if (rua == "") {
+                alert("Preencha o campo Rua");
+                formuser.rua.focus();
+                return false;
+            }
+            var bairro = formuser.bairro.value;
+            if (bairro == "") {
+                alert("Preencha o campo Bairro");
+                formuser.bairro.focus();
+                return false;
+            }
+            var estado = formuser.estado.value;
+            if (estado == "") {
+                alert("Preencha o campo Estado");
+                formuser.estado.focus();
+                return false;
+            }
+            var numero = formuser.numero.value;
+            if (numero == "") {
+                alert("Preencha o campo Numero da Casa");
+                formuser.numero.focus();
+                return false;
+            }
+
+            var comp = formuser.comp[1].value;
+            if (comp == "") {
+                alert("Campo Obrigatório!")
+                formuser.comp.focus();
+                return false;
+            }
+        }
+    </script>
+    
+    <script>
+        
+        function getDadosEnderecoCEP(cep){
+
+            let xhr = new XMLHttpRequest
+
+            let url = 'https://viacep.com.br/ws/' + cep + '/json/unicode/'
+
+            xhr.open('GET', url, true)
+
+            xhr.onreadystatechange = function(){
+                if (xhr.readyState == 4){
+                    if(xhr.status == 200){
+                    let dadosJSONText = xhr.responseText
+                    let dadosJSONObj = JSON.parse(dadosJSONText)
+
+                    document.getElementById('rua').value = dadosJSONObj.logradouro
+                    document.getElementById('bairro').value = dadosJSONObj.bairro
+                    document.getElementById('cidade').value = dadosJSONObj.localidade
+                    document.getElementById('estado').value = dadosJSONObj.uf
+                }
+            }
+        }
+        xhr.send()
+
+        }
+        
+    </script>
+</body>
+
+</html>
